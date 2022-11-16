@@ -1,3 +1,2 @@
-# Laravel_API_React
-1. API Development in folder: API(Laravel)
-    - cd API: php 
+# Laravel Backend API
+# Laravel Frontend React: https://github.com/duongdinhnguyen/Library_manager_frontend_react.git
