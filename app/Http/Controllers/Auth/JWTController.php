@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\JWTLoginRequest;
 use App\Http\Requests\JWTRegisterRequest;
 use App\Models\User;
 use App\Repositories\User\UserRepositoryInterface;
@@ -31,18 +32,9 @@ class JWTController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request)
+    public function login(JWTLoginRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|string|min:6',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        if (!$token = auth()->attempt($validator->validated())) {
+        if (!$token = auth()->attempt($request->only('email', 'password'))) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -59,7 +51,7 @@ class JWTController extends Controller
         $user = $this->userRepo->create(
             array_merge($request->all(), ['password' => Hash::make($request->password)])
         );
-        
+
         return response()->json([
             'message' => 'User successfully registered',
             'user' => $user
