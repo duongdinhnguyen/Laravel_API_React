@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class JWTLoginRequest extends FormRequest
+class JWTChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,8 +26,7 @@ class JWTLoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|string|email|max:100',
-            'password' => 'required|string|min:6',
+            'new_password' => 'required|string|min:6',
         ];
     }
 
@@ -41,8 +40,6 @@ class JWTLoginRequest extends FormRequest
         return [
             'required' => ':attribute là bắt buộc',
             'string' => ':attribute định dạng chuỗi',
-            'email' => ':attribute sai định dạng',
-            'max' => ':attribute tối đa 100 ký tự',
             'min' => ':attribute tối thiểu 6 ký tự',
         ];
     }
@@ -55,8 +52,7 @@ class JWTLoginRequest extends FormRequest
     public function attributes()
     {
         return [
-            'email' => '* Email',
-            'password' => '* Mật khẩu',
+            'new_password' => '* Mật khẩu mới',
         ];
     }
 

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\JWTChangePasswordRequest;
 use App\Http\Requests\JWTLoginRequest;
 use App\Http\Requests\JWTRegisterRequest;
 use App\Models\User;
 use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -108,20 +110,10 @@ class JWTController extends Controller
         ]);
     }
 
-    public function changePassWord(Request $request)
+    public function changePassWord(JWTChangePasswordRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'old_password' => 'required|string|min:6',
-            'new_password' => 'required|string|confirmed|min:6',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        }
-        $userId = auth()->user()->id;
-
-        $user = User::where('id', $userId)->update(
-            ['password' => bcrypt($request->new_password)]
+        $user = $this->userRepo->update(Auth::user()->id,
+            ['password' => Hash::make($request->new_password)]
         );
 
         return response()->json([
