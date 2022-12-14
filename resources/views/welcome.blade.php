@@ -44,7 +44,7 @@
                 success: function (response) {
                     time += timeInterval
                     console.log(time);
-                    $('#score').text(response['score_2']);
+                    $('#score').text(response['score2']);
                 }
             })
         }, timeInterval);
