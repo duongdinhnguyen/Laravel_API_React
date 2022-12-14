@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <style>
-        .form {
+        .room {
             display: flex;
             justify-content: space-evenly;
         }
@@ -16,38 +16,23 @@
     </style>
 </head>
 
-<body class="antialiased">
-    <div class="form">
-        <div class="score">
-            <label for="">User 1</label>
-            <span>Score: 0</span>
-        </div>
-        <div class="score">
-            <label for="">User 2</label>
-            <span>Score: </span>
-            <span id="score">0</span>
-        </div>
+<body>
+    <div class="room">
+        <a href="{{ route('room.create') }}">Tạo Room</a>
+        <a href="{{ route('room.destroy') }}">Xóa hết room</a>
     </div>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script>
-        let time = 0;
-        const timeInterval = 2000;
-        var startInterval = setInterval(() => {
-            if (time >= 12000) clearInterval(startInterval);
-            $.ajax({
-                type: "GET",
-                url: "score",
-                data: {
-                    user_id: 2
-                },
-                success: function (response) {
-                    time += timeInterval
-                    console.log(time);
-                    $('#score').text(response['score2']);
-                }
-            })
-        }, timeInterval);
-    </script>
+    @if ($rooms)
+        @foreach ($rooms as $room)
+            <div style="padding: 20px">
+                @if ($room->user1 && $room->user2)
+                    Room {{ $room->id }}(Đã đầy)
+                @else
+                    <a href="{{ route('room.index', ['id' => $room->id]) }}">
+                        Room {{ $room->id }}
+                    </a>
+                @endif
+            </div>
+        @endforeach
+    @endif
 </body>
 </html>

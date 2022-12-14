@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Room;
+use App\Http\Controllers\Arena\ArenaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,16 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-Route::get('/', function () {
-    return view('welcome');
-})->name('arena');
-Route::get('score', function (Request $data) {
-
-    $room = Room::where('user2', $data['user_id'])->first();
-    $score = $room->score2 + 10;
-    $room->score2 = $score;
-    $room->save();
-    // $score
-    return response()->json($room);
-});
+Route::get('/', [ArenaController::class, 'dashboard'])->name('dashboard');
+Route::get('createRoom', [ArenaController::class, 'createRoom'])->name('room.create');
+Route::get('destroyRoom', [ArenaController::class, 'destroyRoom'])->name('room.destroy');
+Route::get('room/{id}', [ArenaController::class, 'room'])->name('room.index');
+Route::get('/arena', [ArenaController::class, 'index'])->name('arena');
+Route::get('score', [ArenaController::class, 'score']);
