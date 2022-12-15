@@ -51,10 +51,18 @@ class ArenaController extends Controller
     public function score (Request $data)
     {
         $room = Room::find($data['room_id']);
-        $score = $room->score2 + 10;
-        $room->score2 = $score;
+        if (auth()->user()->id == $room->user1) {
+            // cập nhật điểm thằng thứ 2
+            $score = $room->score2 + 10;
+            $room->score2 = $score;
+        }
+        else {
+            // cập nhật điểm thằng thứ nhất
+            $score = $room->score1 + 10;
+            $room->score1 = $score;
+        }
         $room->save();
         // $score
-        return response()->json($room);
+        return response()->json($score);
     }
 }

@@ -20,12 +20,12 @@
 <body>
     <div class="form">
         <div class="score">
-            <label for="">User 1: {{ $room->user_1->name ?? '' }}</label>
+            <label for="">Tôi: {{ auth()->user()->name ?? '' }}</label>
             <span>Score: </span>
             <span id="score1">0</span>
         </div>
         <div class="score">
-            <label for="">User 2: {{ $room->user_2->name ?? '' }}</label>
+            <label for="">User 2: {{ $room->user1 == auth()->user()->id ? ($room->user_2->name ?? '') : ($room->user_1->name) }}</label>
             <span>Score: </span>
             <span id="score2">0</span>
         </div>
@@ -47,7 +47,7 @@
                 },
                 success: function (response) {
                     time += timeInterval
-                    $('#score2').text(response['score2']);
+                    $('#score2').text(response);
                 }
             })
         }, timeInterval);
