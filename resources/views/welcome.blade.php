@@ -17,22 +17,22 @@
 </head>
 
 <body>
-    <div class="room">
-        <a href="{{ route('room.create') }}">Tạo Room</a>
-        <a href="{{ route('room.destroy') }}">Xóa hết room</a>
-    </div>
-    @if ($rooms)
-        @foreach ($rooms as $room)
-            <div style="padding: 20px">
-                @if ($room->user1 && $room->user2)
-                    Room {{ $room->id }}(Đã đầy)
-                @else
-                    <a href="{{ route('room.index', ['id' => $room->id]) }}">
-                        Room {{ $room->id }}
-                    </a>
-                @endif
+    <div class="score">
+        <form action="{{ route('login') }}" method="POST">
+            @csrf
+            <div>
+                <label for="email">Email</label>
+                <input id="email" name="email" type="text">
             </div>
-        @endforeach
-    @endif
+            <div>
+                <label for="password">Password</label>
+                <input id="password" name="password" type="text">
+            </div>
+            <div>
+                <button type="submit">Login</button>
+            </div>
+        </form>
+    </div>
+
 </body>
 </html>

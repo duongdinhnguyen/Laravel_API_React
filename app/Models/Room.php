@@ -17,4 +17,14 @@ class Room extends Model
         'user1',
         'user2',
     ];
+
+    public function user_1()
+    {
+        return $this->hasOne('App\Models\User', 'id', 'user1');
+    }
+
+    public function user_2()
+    {
+        return $this->hasOne('App\Models\User', 'id', 'user2');
+    }
 }

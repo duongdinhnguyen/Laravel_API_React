@@ -77,4 +77,8 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(){
         return [];
     }
+
+    // public function room1(){
+    //     return $this->hasOne('App\Models\Room','id','user1');
+    // }
 }

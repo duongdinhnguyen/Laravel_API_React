@@ -16,6 +16,8 @@ class UsersSeeder extends Seeder
     public function run()
     {
         DB::table('users')
-            ->insert(['student_id' => '18001119', 'name' => 'Nguyễn Đình Đương', 'email' => 'nguyendinhduong_t63@hus.edu.vn', 'password' => Hash::make('12345678'), 'phone' => '0367778603', 'rule' => '1','google_id' => '118006738246523608801']);
+            ->insert(['student_id' => '18001119', 'name' => 'Nguyễn Đình Đương', 'email' => 'nguyendinhduong.jvb@gmail.com', 'password' => Hash::make('12345678'), 'phone' => '0367778603', 'rule' => '1']);
+        DB::table('users')
+            ->insert(['student_id' => '18008386', 'name' => 'Đương Đình Nguyễn', 'email' => 'nguyendinhduong@gmail.com', 'password' => Hash::make('12345678'), 'phone' => '0367778603', 'rule' => '1']);
     }
 }

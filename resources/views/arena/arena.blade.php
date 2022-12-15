@@ -20,13 +20,14 @@
 <body>
     <div class="form">
         <div class="score">
-            <label for="">User 1</label>
-            <span>Score: 0</span>
+            <label for="">User 1: {{ $room->user_1->name ?? '' }}</label>
+            <span>Score: </span>
+            <span id="score1">0</span>
         </div>
         <div class="score">
-            <label for="">User 2</label>
+            <label for="">User 2: {{ $room->user_2->name ?? '' }}</label>
             <span>Score: </span>
-            <span id="score">0</span>
+            <span id="score2">0</span>
         </div>
     </div>
 
@@ -34,18 +35,19 @@
     <script>
         let time = 0;
         const timeInterval = 2000;
+        const room = {!! json_encode($room) !!};
+        console.log(room['id']);
         var startInterval = setInterval(() => {
             if (time >= 12000) clearInterval(startInterval);
             $.ajax({
                 type: "GET",
-                url: "score",
+                url: "{{ route('room.score') }}",
                 data: {
-                    user_id: 2
+                    room_id : room['id']
                 },
                 success: function (response) {
                     time += timeInterval
-                    console.log(time);
-                    $('#score').text(response['score2']);
+                    $('#score2').text(response['score2']);
                 }
             })
         }, timeInterval);

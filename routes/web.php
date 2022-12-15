@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Arena\ArenaController;
+use App\Http\Controllers\Arena\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,10 +15,13 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', [ArenaController::class, 'dashboard'])->name('dashboard');
+Route::get('/', function () {
+    return view('welcome');
+})->name('dashboard');
+Route::post('/', [LoginController::class, 'login'])->name('login');
+Route::get('/rooms', [ArenaController::class, 'dashboard'])->name('room.dashboard');
 Route::get('createRoom', [ArenaController::class, 'createRoom'])->name('room.create');
 Route::get('destroyRoom', [ArenaController::class, 'destroyRoom'])->name('room.destroy');
 Route::get('room/{id}', [ArenaController::class, 'room'])->name('room.index');
-Route::get('/arena', [ArenaController::class, 'index'])->name('arena');
-Route::get('score', [ArenaController::class, 'score']);
+Route::get('/arena/{id}', [ArenaController::class, 'index'])->name('arena');
+Route::get('score', [ArenaController::class, 'score'])->name('room.score');
