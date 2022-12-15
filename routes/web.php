@@ -23,5 +23,6 @@ Route::get('/rooms', [ArenaController::class, 'dashboard'])->name('room.dashboar
 Route::get('createRoom', [ArenaController::class, 'createRoom'])->name('room.create');
 Route::get('destroyRoom', [ArenaController::class, 'destroyRoom'])->name('room.destroy');
 Route::get('room/{id}', [ArenaController::class, 'room'])->name('room.index');
+Route::get('checkStart', [ArenaController::class, 'checkStart'])->name('room.checkStart');
 Route::get('/arena/{id}', [ArenaController::class, 'index'])->name('arena');
 Route::get('score', [ArenaController::class, 'score'])->name('room.score');

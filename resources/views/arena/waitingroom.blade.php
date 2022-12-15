@@ -1,3 +1,7 @@
+<?php
+use App\Constants\RoomConstant;
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,14 +18,36 @@
 
     <div>
         <span>User 2:</span>
-        <span>{{ $room->user_2->name ?? 'Đang chờ' }}</span>
+        <span id="user2">{{ $room->user_2->name ?? 'Đang chờ' }}</span>
     </div>
     <div>
-        @if ($room->user1 && $room->user2)
-            <div>
-                <a href="{{ route('arena', ['id' => $room->id]) }}">Bắt đầu</a>
-            </div>
-        @endif
+        <div>
+            <a id="arena" href="{{ ($room->user1 && $room->user2) ? route('arena', ['id' => $room->id]) : "#" }}">Bắt đầu</a>
+        </div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script>
+        const room = {!! json_encode($room) !!};
+        var startInterval = setInterval(() => {
+            $.ajax({
+                type: "GET",
+                url: "{{ route('room.checkStart') }}",
+                data: {
+                    room_id : room['id']
+                },
+                success: function (response) {
+                    if (response['user_name']) {
+                        $('#user2').text(response['user_name']);
+                        $('#arena').attr('href', "{{ route('arena', ['id' => $room->id]) }}");
+                    }
+
+                    if(response['status'] == {{ RoomConstant::START }}) {
+                        clearInterval(startInterval);
+                        document.getElementById("arena").click();
+                    }
+                }
+            })
+        }, 1000);
+    </script>
 </body>
 </html>

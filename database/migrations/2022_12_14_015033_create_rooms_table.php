@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('score1')->nullable();
             $table->integer('user2')->nullable();
             $table->integer('score2')->nullable();
+            $table->integer('start')->nullable()->default(1);
             $table->timestamps();
         });
     }

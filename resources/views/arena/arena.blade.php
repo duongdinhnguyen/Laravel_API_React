@@ -36,7 +36,6 @@
         let time = 0;
         const timeInterval = 2000;
         const room = {!! json_encode($room) !!};
-        console.log(room['id']);
         var startInterval = setInterval(() => {
             if (time >= 12000) clearInterval(startInterval);
             $.ajax({

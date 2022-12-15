@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Arena;
 
+use App\Constants\RoomConstant;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Room;
@@ -19,6 +20,8 @@ class ArenaController extends Controller
     public function index ($id)
     {
         $room = Room::find($id);
+        $room->start = RoomConstant::START;
+        $room->save();
         return view('arena.arena', compact('room'));
     }
 
@@ -31,6 +34,18 @@ class ArenaController extends Controller
             $room->save();
         }
         return view('arena.waitingroom', compact('room'));
+    }
+
+    public function checkStart(Request $data)
+    {
+        $room = Room::find($data['room_id']);
+        $reponse = [];
+        if (auth()->user()->id == $room->user1) {
+            $reponse['user_name'] = $room->user_2->name;
+        }
+        else $reponse['user_name'] = $room->user_1->name;
+        $reponse['status'] = $room->start;
+        return response()->json($reponse);
     }
 
     public function createRoom ()
