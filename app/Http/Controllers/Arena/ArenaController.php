@@ -85,27 +85,26 @@ class ArenaController extends Controller
     public function updateQuestionAndScore (Request $data)
     {
         $answer = Answer::find($data['answer_id']);
-        if ($answer->status) {
-            $room = Room::find($data['room_id']);
-            if (auth()->user()->id == $room->user1) {
-                // cập nhật điểm thằng thứ 1
-                $score = $room->score1 + 10;
-                $room->score1 = $score;
-            }
-            else {
-                // cập nhật điểm thằng thứ 2
-                $score = $room->score2 + 10;
-                $room->score2 = $score;
-            }
-            $room->save();
+        $room = Room::find($data['room_id']);
+        if (auth()->user()->id == $room->user1) {
+            // cập nhật điểm thằng thứ 1
+            $score = $answer->status ? $room->score1 + 10 : $room->score1;
+            $room->score1 = $score;
         }
+        else {
+            // cập nhật điểm thằng thứ 2
+            $score = $answer->status ? $room->score2 + 10 : $room->score2;
+            $room->score2 = $score;
+        }
+        $room->save();
 
         $question = Question::inRandomOrder()->limit(1)->first(); // Random 1 câu hỏi bất kỳ
         $answers = $question->answers;
         $reponse = [
             'score' => $score,
             'question' => $question->name,
-            'answers' => $answers
+            'answers' => $answers,
+            'status' => $answer->status
         ];
         return response()->json($reponse);
     }

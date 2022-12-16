@@ -63,10 +63,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script>
         let time = 0;
-        const timeInterval = 5000;
+        const timeInterval = 2000; // 2 giây load điểm 1 lần
         const room = {!! json_encode($room) !!};
         var startInterval = setInterval(() => {
-            if (time >= 600000) clearInterval(startInterval);
+            if (time >= 600000) clearInterval(startInterval); // sau 10 phút không load dừng
             $.ajax({
                 type: "GET",
                 url: "{{ route('room.score') }}",
@@ -94,9 +94,12 @@
 
                 },
                 success: function (response) {
+                    $('#question').append(response['status'] ? `<span style="color: green">Trả lời đúng</span>` : `<span style="color: red">Trả lời sai</span>`);
                     $('#score1').text(response['score']);
                     var question = createQuestion(response);
-                    $('#question').replaceWith(question);
+                    setTimeout(() => {
+                        $('#question').replaceWith(question);
+                    }, 2000);
                 }
             })
         }
