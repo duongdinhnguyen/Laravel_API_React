@@ -13,7 +13,7 @@ use App\Constants\RoomConstant;
 <body>
     <div>
         <span>User 1:</span>
-        <span>{{ $room->user_1->name ?? '' }}</span>
+        <span>{{ auth()->user()->name ?? '' }}</span>
     </div>
 
     <div>

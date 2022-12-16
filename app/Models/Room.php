@@ -20,11 +20,11 @@ class Room extends Model
 
     public function user_1()
     {
-        return $this->hasOne('App\Models\User', 'id', 'user1');
+        return $this->hasOne('App\Models\User', 'id', 'user1')->withDefault();
     }
 
     public function user_2()
     {
-        return $this->hasOne('App\Models\User', 'id', 'user2');
+        return $this->hasOne('App\Models\User', 'id', 'user2')->withDefault();
     }
 }

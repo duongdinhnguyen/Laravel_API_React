@@ -51,7 +51,7 @@
 
     <div class="form" >
         <div class="question">
-            <ul id="question">1.{{ $question->name ?? ''}}
+            <ul id="question">{{ $question->name ?? ''}}
                 @foreach ($question->answers as $answer)
                     <li><input type="radio" name="answer" value="{{ $answer->id }}">{{ $answer->name ?? '' }}</li>
                 @endforeach
@@ -63,10 +63,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script>
         let time = 0;
-        const timeInterval = 2000;
+        const timeInterval = 5000;
         const room = {!! json_encode($room) !!};
         var startInterval = setInterval(() => {
-            if (time >= 120000) clearInterval(startInterval);
+            if (time >= 600000) clearInterval(startInterval);
             $.ajax({
                 type: "GET",
                 url: "{{ route('room.score') }}",
@@ -94,9 +94,30 @@
 
                 },
                 success: function (response) {
-                    location.reload();
+                    $('#score1').text(response['score']);
+                    var question = createQuestion(response);
+                    $('#question').replaceWith(question);
                 }
             })
+        }
+
+        function createQuestion(data) {
+            var question = document.createElement('ul');
+            question.setAttribute('id', 'question');
+            question.textContent = data['question'];
+
+            data['answers'].forEach(element => {
+                var answer = document.createElement('li');
+                var input = document.createElement('input');
+                answer.textContent = element['name'];
+                input.setAttribute('type', 'radio');
+                input.setAttribute('name', 'answer');
+                input.setAttribute('value', element['id']);
+                answer.prepend(input);
+                question.append(answer);
+            });
+
+            return question;
         }
     </script>
 </body>

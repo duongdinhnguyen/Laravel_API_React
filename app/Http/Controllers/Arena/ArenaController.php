@@ -99,6 +99,14 @@ class ArenaController extends Controller
             }
             $room->save();
         }
-        return response()->json(true);
+
+        $question = Question::inRandomOrder()->limit(1)->first(); // Random 1 câu hỏi bất kỳ
+        $answers = $question->answers;
+        $reponse = [
+            'score' => $score,
+            'question' => $question->name,
+            'answers' => $answers
+        ];
+        return response()->json($reponse);
     }
 }
