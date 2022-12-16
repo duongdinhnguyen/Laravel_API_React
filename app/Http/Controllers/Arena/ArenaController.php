@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Arena;
 
 use App\Constants\RoomConstant;
 use App\Http\Controllers\Controller;
+use App\Models\Answer;
+use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Models\Room;
 
@@ -19,10 +21,12 @@ class ArenaController extends Controller
 
     public function index ($id)
     {
+        $question = Question::inRandomOrder()->limit(1)->first(); // Random 1 câu hỏi bất kỳ
+
         $room = Room::find($id);
         $room->start = RoomConstant::START;
         $room->save();
-        return view('arena.arena', compact('room'));
+        return view('arena.arena', compact('room', 'question'));
     }
 
     public function room ($id)
@@ -68,16 +72,33 @@ class ArenaController extends Controller
         $room = Room::find($data['room_id']);
         if (auth()->user()->id == $room->user1) {
             // cập nhật điểm thằng thứ 2
-            $score = $room->score2 + 10;
-            $room->score2 = $score;
+            $score = $room->score2;
         }
         else {
             // cập nhật điểm thằng thứ nhất
-            $score = $room->score1 + 10;
-            $room->score1 = $score;
+            $score = $room->score1;
         }
-        $room->save();
         // $score
         return response()->json($score);
+    }
+
+    public function updateQuestionAndScore (Request $data)
+    {
+        $answer = Answer::find($data['answer_id']);
+        if ($answer->status) {
+            $room = Room::find($data['room_id']);
+            if (auth()->user()->id == $room->user1) {
+                // cập nhật điểm thằng thứ 1
+                $score = $room->score1 + 10;
+                $room->score1 = $score;
+            }
+            else {
+                // cập nhật điểm thằng thứ 2
+                $score = $room->score2 + 10;
+                $room->score2 = $score;
+            }
+            $room->save();
+        }
+        return response()->json(true);
     }
 }

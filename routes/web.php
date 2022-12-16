@@ -26,3 +26,4 @@ Route::get('room/{id}', [ArenaController::class, 'room'])->name('room.index');
 Route::get('checkStart', [ArenaController::class, 'checkStart'])->name('room.checkStart');
 Route::get('/arena/{id}', [ArenaController::class, 'index'])->name('arena');
 Route::get('score', [ArenaController::class, 'score'])->name('room.score');
+Route::post('updateQuestionAndScore', [ArenaController::class, 'updateQuestionAndScore'])->name('room.updateQuestionAndScore');
