@@ -78,7 +78,4 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    // public function room1(){
-    //     return $this->hasOne('App\Models\Room','id','user1');
-    // }
 }

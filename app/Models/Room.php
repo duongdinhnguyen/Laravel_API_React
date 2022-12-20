@@ -18,13 +18,13 @@ class Room extends Model
         'user2',
     ];
 
-    public function user_1()
+    public function arenas()
     {
-        return $this->hasOne('App\Models\User', 'id', 'user1')->withDefault();
+        return $this->hasMany('App\Models\Arena', 'room_id', 'id');
     }
 
-    public function user_2()
-    {
-        return $this->hasOne('App\Models\User', 'id', 'user2')->withDefault();
-    }
+    // public function user_2()
+    // {
+    //     return $this->hasOne('App\Models\User', 'id', 'user2')->withDefault();
+    // }
 }

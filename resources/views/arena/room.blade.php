@@ -27,7 +27,7 @@
                 @if ($room->user1 && $room->user2)
                     Room {{ $room->id }}(Đã đầy)
                 @else
-                    <a href="{{ route('room.index', ['id' => $room->id]) }}">
+                    <a href="{{ route('room.room', ['id' => $room->id]) }}">
                         Room {{ $room->id }}
                     </a>
                 @endif

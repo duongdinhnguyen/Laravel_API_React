@@ -18,11 +18,11 @@ use App\Constants\RoomConstant;
 
     <div>
         <span>User 2:</span>
-        <span id="user2">{{ $room->user_2->name ?? 'Đang chờ' }}</span>
+        <span id="user2">{{ $user_2->user->name ?? 'Đang chờ' }}</span>
     </div>
     <div>
         <div>
-            <a id="arena" href="{{ ($room->user1 && $room->user2) ? route('arena', ['id' => $room->id]) : "#" }}">Bắt đầu</a>
+            <a id="arena" href="{{ $room->arenas->count() == RoomConstant::COUNT_USER ? route('arena', ['id' => $room->id]) : "#" }}">Bắt đầu</a>
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>

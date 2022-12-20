@@ -16,11 +16,6 @@ class RoomSeeder extends Seeder
      */
     public function run()
     {
-        Room::insert([
-            'user1'=> 1,
-            'score1'=> 0,
-            'user2' => 2,
-            'score2'=> 0,
-        ]);
+
     }
 }

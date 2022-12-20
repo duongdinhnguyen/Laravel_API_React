@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Arena;
 use App\Constants\RoomConstant;
 use App\Http\Controllers\Controller;
 use App\Models\Answer;
+use App\Models\Arena;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Models\Room;
@@ -24,30 +25,45 @@ class ArenaController extends Controller
         $question = Question::inRandomOrder()->limit(1)->first(); // Random 1 câu hỏi bất kỳ
 
         $room = Room::find($id);
-        $room->start = RoomConstant::START;
+        $room->start = RoomConstant::START;// chuyển trạng thái từ default->start
         $room->save();
-        return view('arena.arena', compact('room', 'question'));
+        $user_1 = Arena::where('room_id', $room->id)
+            ->where('user_id', auth()->user()->id)
+            ->first();
+        $user_2 = Arena::where('room_id', $room->id)
+            ->where('user_id', '<>', auth()->user()->id)
+            ->first();
+
+        return view('arena.arena', compact('room', 'question', 'user_1', 'user_2'));
     }
 
     public function room ($id)
     {
         $room = Room::find($id);
-        if (empty($room->user2) && $room->user1 != auth()->user()->id) {
-            $room->user2 = auth()->user()->id;
-            $room->score2 = 0;
-            $room->save();
+        if ($room->arenas->count() < RoomConstant::COUNT_USER) {
+            $arena = Arena::create([
+                'room_id' => $room->id,
+                'user_id' => auth()->user()->id
+            ]);
         }
-        return view('arena.waitingroom', compact('room'));
+
+        $user_2 = Arena::where('room_id', $room->id)
+            ->where('user_id', '<>', auth()->user()->id)
+            ->first();
+
+        return view('arena.waitingroom', compact('room', 'user_2'));
     }
 
     public function checkStart(Request $data)
     {
-        $room = Room::find($data['room_id']);
         $reponse = [];
-        if (auth()->user()->id == $room->user1) {
-            $reponse['user_name'] = $room->user_2->name;
+        $room = Room::find($data['room_id']);
+        $user_2 = Arena::where('room_id', $room->id)
+            ->where('user_id', '<>', auth()->user()->id)
+            ->first();
+        if (!empty($user_2)) {
+            $reponse['user_name'] = $user_2->user->name;
         }
-        else $reponse['user_name'] = $room->user_1->name;
         $reponse['status'] = $room->start;
         return response()->json($reponse);
     }
@@ -55,10 +71,9 @@ class ArenaController extends Controller
     public function createRoom ()
     {
         $room = Room::create([
-            'user1' => auth()->user()->id,
-            'score1' => 0
+            'start' => RoomConstant::DEFAULT
         ]);
-        return redirect()->route('room.index', ['id' => $room->id]);
+        return redirect()->route('room.room', ['id' => $room->id]);
     }
 
     public function destroyRoom ()
@@ -69,34 +84,33 @@ class ArenaController extends Controller
 
     public function score (Request $data)
     {
-        $room = Room::find($data['room_id']);
-        if (auth()->user()->id == $room->user1) {
-            // cập nhật điểm thằng thứ 2
-            $score = $room->score2;
-        }
-        else {
-            // cập nhật điểm thằng thứ nhất
-            $score = $room->score1;
-        }
-        // $score
-        return response()->json($score);
+        $reponse = [];
+        $room_id = $data['room_id'];
+        $user_2 = Arena::where('room_id', $room_id)
+            ->where('user_id', '<>', auth()->user()->id)
+            ->first();
+
+        $reponse['score'] = $user_2->score ?? null;
+        $reponse['user_2'] = !empty($user_2) ? $user_2 : null;
+        $reponse['href'] = route('room.dashboard');
+
+        return response()->json($reponse);
     }
 
     public function updateQuestionAndScore (Request $data)
     {
         $answer = Answer::find($data['answer_id']);
-        $room = Room::find($data['room_id']);
-        if (auth()->user()->id == $room->user1) {
-            // cập nhật điểm thằng thứ 1
-            $score = $answer->status ? $room->score1 + 10 : $room->score1;
-            $room->score1 = $score;
+        $room_id = $data['room_id'];
+
+        $authArena = Arena::where('room_id', $room_id)
+            ->where('user_id', auth()->user()->id)
+            ->first();
+        $score = $authArena->score;
+        if ($answer->status) {
+            $score += 10;
+            $authArena->score = $score;
+            $authArena->save();
         }
-        else {
-            // cập nhật điểm thằng thứ 2
-            $score = $answer->status ? $room->score2 + 10 : $room->score2;
-            $room->score2 = $score;
-        }
-        $room->save();
 
         $question = Question::inRandomOrder()->limit(1)->first(); // Random 1 câu hỏi bất kỳ
         $answers = $question->answers;
@@ -106,6 +120,18 @@ class ArenaController extends Controller
             'answers' => $answers,
             'status' => $answer->status
         ];
+        return response()->json($reponse);
+    }
+
+    public function exitRoom (Request $data)
+    {
+        $reponse = [];
+        $room_id = $data['room_id'];
+        $authArena = Arena::where('room_id', $room_id)
+            ->where('user_id', auth()->user()->id)
+            ->first();
+        $authArena->delete();
+        $reponse['href'] = route('room.dashboard');
         return response()->json($reponse);
     }
 }
